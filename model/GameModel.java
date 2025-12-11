@@ -137,4 +137,67 @@ public class GameModel {
             
             targets.add(new Target(800 + i * 150, y, 40, 30, -speed, color, points));
         }
+
     }
+    public void update() {
+        // Update projectiles
+        List<Projectile> projectilesToRemove = new ArrayList<>();
+        for (Projectile p : projectiles) {
+            p.update();
+            if (!p.active) projectilesToRemove.add(p);
+        }
+        projectiles.removeAll(projectilesToRemove);
+        
+        // Update targets
+        for (Target t : targets) {
+            t.update();
+        }
+        
+        // Check collisions
+        List<Target> targetsToRemove = new ArrayList<>();
+        for (Projectile p : projectiles) {
+            for (Target t : targets) {
+                if (t.checkCollision(p)) {
+                    targetsToRemove.add(t);
+                    score += t.points;
+                    hits++;
+                    p.active = false;
+                    break;
+                }
+            }
+        }
+        targets.removeAll(targetsToRemove);
+        
+        // Add new targets if needed
+        if (targets.size() < 3) {
+            int y = random.nextInt(400) + 50;
+            int speed = random.nextInt(3) + 1;
+            Color color = new Color(
+                random.nextInt(256),
+                random.nextInt(256),
+                random.nextInt(256)
+            );
+            targets.add(new Target(800, y, 40, 30, -speed, color, 15));
+        }
+    }
+    
+    public void shoot() {
+        projectiles.add(cannon.shoot());
+        shots++;
+    }
+    
+    // Getters
+    public Cannon getCannon() { return cannon; }
+    public List<Projectile> getProjectiles() { return projectiles; }
+    public List<Target> getTargets() { return targets; }
+    public int getScore() { return score; }
+    public int getShots() { return shots; }
+    public int getHits() { return hits; }
+    
+    // Control methods
+    public void cannonUp() { cannon.moveUp(); }
+    public void cannonDown() { cannon.moveDown(); }
+    public void powerUp() { cannon.increasePower(); }
+    public void powerDown() { cannon.decreasePower(); }
+    public void restartGame() { initGame(); }
+}
