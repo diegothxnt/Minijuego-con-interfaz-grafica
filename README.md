@@ -33,3 +33,8 @@ javac -d bin src/model/GameModel.java src/view/GamePanel.java src/view/GameView.
 
 # Ejecutar
 java -cp bin Main
+
+
+# Elaborado por 
+Diego Rojas 2025
+
